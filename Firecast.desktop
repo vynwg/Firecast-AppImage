@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Firecast
+Exec=AppRun
+Icon=Firecast
+Type=Application
+Categories=Game
+StartupNotify=true
+X-AppImage-Version=8.11c
+X-AppImage-Developer=Vynwg

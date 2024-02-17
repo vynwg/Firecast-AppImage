@@ -1,0 +1,61 @@
+#!/bin/bash
+# Author : Ismael Barros² <ismael@barros2.org>
+# License : BSD http://en.wikipedia.org/wiki/BSD_license
+
+export APPDIR="$(dirname "$(readlink -f "$0")")"
+export APPPKG="$(basename "$APPIMAGE")"
+LOGFILE=$(mktemp "/tmp/AppRun-log-${APPPKG}.XXXXXXXXXX")
+
+BINARY="Firecast/Firecast.exe"
+BINARY_ARGS=
+WINETRICKS="gdiplus"
+
+. "$APPDIR/util.sh"
+
+export PATH="$APPDIR/usr/bin/:${PATH}"
+
+[ -z "$*" ] && show_usage "$APPDIR/usage.txt"
+
+"$APPDIR/usr/bin/wineserver" -k
+setup_keepResolution
+
+export WINEPREFIX=""$HOME/.local/share/AppImage/Firecast_wine""
+export WINEARCH="win32"
+export WINEDEBUG="-all"
+export WINEDLLOVERRIDES="mshtml,mscoree=,winemenubuilder.exe=n"
+
+
+CONF=
+for i in $@; do
+	case $i in
+		@conf) CONF=1; shift ;;
+		@reset) rm -rfv "$WINEPREFIX"; shift ;;
+	esac
+done
+
+
+if [ ! -d "$WINEPREFIX" ]; then
+        mkdir -p ~/.cache/winetricks/
+        if [ "$WINETRICKS" ]; then
+                for i in $APPDIR/winetricks/*; do
+                        ln -sf "$i" ~/.cache/winetricks/
+                done
+                "$APPDIR/usr/bin/winetricks" -q $WINETRICKS
+        fi
+
+        mkdir -p "$WINEPREFIX"
+	find "$WINEPREFIX" -type d -exec chmod 775 "{}" \;
+	find "$WINEPREFIX" -type f -exec chmod 664 "{}" \;
+	
+	for i in "${APPDIR}/"*.reg; do
+		[ -f "$i" ] && cp -v "$i" "${WINEPREFIX}"
+	done
+fi
+
+
+cd "$WINEPREFIX"
+if [ $CONF ]; then
+	run_withLocalLibs "$APPDIR/usr/bin/winecfg" $@
+else
+	run_withLocalLibs "$APPDIR/usr/bin/wine" "$APPDIR/$BINARY" $BINARY_ARGS "$@"
+fi

@@ -1,0 +1,83 @@
+The Wine package is compiled against the latest available Slackware
+Stable version. Starting with release 7.5, Wine is compiled against
+Slackware 15.0. Some of the suggested requirements are not part of
+the Stable branch and as such are not included in the build process.
+Following is a list of packages needed to build Wine for Slackware
+Stable:
+alsa-lib
+audiofile
+cxxlibs
+cyrus-sasl
+e2fsprogs
+esound
+gcc
+glib2
+glibc-solibs
+gst-plugins-base
+gstreamer
+lcms
+libICE
+libSM
+libX11
+libXau
+libXdamage
+libXdmcp
+libXext
+libXfixes
+libXxf86vm
+libdrm
+libexif
+libgphoto2
+libtool
+libxcb
+libxml2
+mesa
+mpeg123
+mpg123
+openldap-client
+openssl
+perl
+util-linux-ng
+zlib
+attr
+bzip2
+dbus
+eudev
+expat
+flac
+freetype
+gettext-tools
+glu
+gst-plugins-base0
+gstreamer0
+harfbuzz
+json-c
+lcms2
+libXi
+libXtst
+libasyncns
+libcap
+libffi
+libnl3
+libogg
+libpcap
+libpng
+libsndfile
+libunistring
+libusb
+libvorbis
+libxshmfence
+pulseaudio
+xz
+
+In addition to the previous list, fontforge is included to increase
+font quality.
+
+Some more software can be installed to compile Wine. Following is a
+list of such packages and their location / suggested build procedure:
+
+Slackbuild scripts for
+fontforge,
+libcapi20,
+Oss4
+can be downloaded from http://slackbuilds.org.

@@ -1,0 +1,959 @@
+#!/bin/sh
+
+# $Id: wine.SlackBuild,v 1.56 2010/05/17 16:40:00 root Exp root $
+# Upgraded by Simone Giustetti - (studiosg AT giustetti DOT net)
+#
+# Copyright 2006-2009  Eric Hameleers, Eindhoven, NL
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# -----------------------------------------------------------------------------
+# Slackware SlackBuild script
+# ===========================
+# By:        Eric Hameleers <alien@slackware.com>
+# For:       wine
+# Descr:     Wine Is Not an Emulator
+# URL:       http://winehq.com/
+# Needs:     fontforge (builds better fonts when compiling wine)
+# Changelog:
+# 0.9.23-1:   24/Oct/2006 by Eric Hameleers <alien@slackware.com>
+#            * Initial build.
+# 0.9.25-1:   14/nov/2006 by Eric Hameleers <alien@slackware.com>
+# 0.9.30-1:   30/jan/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.31-1:   17/feb/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.32-1:   02/mar/2007 by Eric Hameleers <alien@slackware.com>
+#            * Update. I wasn't so happy with 0.9.31, it would not run HL2
+#              anywhere near reliably.
+# 0.9.33-1:   20/mar/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.34-1:   03/apr/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.35-1:   15/apr/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.36-1:   29/apr/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.37-1:   12/may/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.38-1:   04/jun/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.39-1:   17/jun/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.41-1:   24/jul/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.43-1:   14/aug/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.44-1:   25/aug/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.45-1:   15/sep/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.46-1:   03/oct/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.47-1:   13/oct/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.48-1:   29/oct/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.49-1:   13/nov/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.50-1:   02/dec/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.51-1:   19/dec/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.52-1:   30/dec/2007 by Eric Hameleers <alien@slackware.com>
+# 0.9.53-1:   12/jan/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.54-1:   28/jan/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.55-1:   10/feb/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.56-1:   23/feb/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.57-1:   14/mar/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.58-1:   22/mar/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.59-1:   05/apr/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.60-1:   21/apr/2008 by Eric Hameleers <alien@slackware.com>
+# 0.9.61-1:   06/may/2008 by Eric Hameleers <alien@slackware.com>
+# 1.0.rc1-1:  11/may/2008 by Eric Hameleers <alien@slackware.com>
+# 1.0.rc2-1:  26/may/2008 by Eric Hameleers <alien@slackware.com>
+# 1.0.rc3-1:  02/jun/2008 by Eric Hameleers <alien@slackware.com>
+# 1.0.rc4-1:  07/jun/2008 by Eric Hameleers <alien@slackware.com>
+# 1.0-1:      18/jun/2008 by Eric Hameleers <alien@slackware.com>
+#             * Yeah!
+# 1.1.0-1:    04/jul/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.2-1:    26/jul/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.3-1:    30/aug/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.4-1:    09/sep/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.5-1:    24/sep/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.6-1:    13/oct/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.7-1:    27/oct/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.9-1:    21/nov/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.10-1:   06/dec/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.11-1:   22/dec/2008 by Eric Hameleers <alien@slackware.com>
+# 1.1.22-1:   28/may/2009 by Eric Hameleers <alien@slackware.com>
+# 1.1.24-1:   22/jun/2009 by Eric Hameleers <alien@slackware.com>
+# 1.1.29-1:   14/sep/2009 by Eric Hameleers <alien@slackware.com>
+# 1.1.39-1:   23/feb/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.1.40-1:   10/mar/2010 by Simone Giustetti <studiosg@giustetti.net> 
+# 1.1.41-1:   22/mar/2010 by Simone Giustetti <studiosg@giustetti.net> 
+# 1.1.42-1:   06/apr/2010 by Simone Giustetti <studiosg@giustetti.net> 
+# 1.1.43-1:   19/apr/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.1.44-1:   07/may/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.1.44-2:   13/may/2010 by Simone Giustetti <studiosg@giustetti.net>
+#             Let's try to have a working 64 bit Wine + Wow ;) .
+# 1.2-rc1:    24/may/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2-rc2:    01/jun/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2-rc3:    14/jun/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2-rc4:    21/jun/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2-rc5:    26/jun/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2-rc6:    05/jul/2010 by Simone Giustetti <studiosg@giustetti.net>
+#             *.xpm icons disappeared. Removed the menu' entry creation.
+# 1.2-rc7:    12/jul/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2.0:      19/jul/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.0:      02/aug/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.1:      23/aug/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.2:      08/sep/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.3:      20/sep/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.4:      04/oct/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2.1:      12/oct/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.5:      22/oct/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.6:      02/Nov/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.7:      15/Nov/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.7-2:    17/Nov/2010 by Simone Giustetti <studiosg@giustetti.net>
+#             Compiled wow64 without gstreamer which introduced a
+#             segmentation fault. The 32 bit package seems to work
+#             fine instead.
+# 1.3.8:      29/Nov/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2.2:      09/Dec/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.9:      12/Dec/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.10:     26/Dec/2010 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.11:     10/Jan/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.12:     24/Jan/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.12-2:   25/Jan/2011 by Simone Giustetti <studiosg@giustetti.net>
+#             Added some icons (png, svgz).
+# 1.3.13:     07/Feb/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.13-2:   10/Feb/2011 by Simone Giustetti <studiosg@giustetti.net>
+#             Wow64 + gstreamer finally working.
+# 1.3.14:     21/Feb/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.15:     07/Mar/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.16:     20/Mar/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.17:     04/Apr/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.2.3:      11/Apr/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.18:     18/Apr/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.19:     02/May/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.20:     15/May/2011 by Simone Giustetti <studiosg@giustetti.net>
+#             Probably last Slackware 13.1 build.
+# 1.3.21:     30/May/2011 by Simone Giustetti <studiosg@giustetti.net>
+#             Time to move to 13.37.
+# 1.3.22:     13/Jun/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.23:     27/Jun/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.24:     11/Jul/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.25:     25/Jul/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.26:     08/Aug/2011 by Simone Giustetti <studiosg@giustetti.net>
+#             Wow64 + gstreamer broken again. New check disables it.
+# 1.3.27:     30/Aug/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.28:     13/Sep/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.29:     26/Sep/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.30:     11/Oct/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.31:     24/Oct/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.32:     05/Nov/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.33:     22/Nov/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.34:     04/Dec/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.35:     17/Dec/2011 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.36:     01/Jan/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.3.37:     16/Jan/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc1:    30/Jan/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc2:    04/Feb/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc3:    13/Feb/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc4:    20/Feb/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc5:    27/Feb/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4-rc6:    05/Mar/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4.0:      08/Mar/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.0:      19/Mar/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.1:      03/Apr/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.2:      16/Apr/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.3:      02/May/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.4:      12/May/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.5:      28/May/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.6:      11/Jun/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.4.1:      20/Jun/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.7:      25/Jun/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.8:      04/Jul/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.9:      18/Jul/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.10:     02/Aug/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.11:     20/Aug/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.12:     03/Sep/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.13:     16/Sep/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.14:     01/Oct/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.15:     15/Oct/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.16:     29/Oct/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.17:     11/Nov/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.18:     26/Nov/2012 by Simone Giustetti <studiosg@giustetti.net>
+#             Time for some updates and code cleaning:
+#                 Added arm port
+#                 Readded winecfg desktop entry with standard png / svg icons
+#                 Added font converter program installation
+#                 32 bit gstreamer for Wow64 should work again
+#                 Build environment moved to Slackware 14.0
+# 1.5.19:     10/Dec/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.20:     22/Dec/2012 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.21:     05/Jan/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.22:     19/Jan/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.23:     02/Feb/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.24:     17/Feb/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.25:     02/Mar/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.26:     18/Mar/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.27:     01/Apr/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.28:     14/Apr/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.29:     27/Apr/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.5.30:     12/May/2013 by Simone Giustetti <studiosg@giustetti.net>
+#             Teporary fix to solve libwine installation issue
+# 1.5.31:     25/May/2013 by Simone Giustetti <studiosg@giustetti.net>
+#             Teporary fix removed. Upstream source patched
+# 1.6-rc1:    08/Jun/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6-rc2:    16/Jun/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6-rc3:    23/Jun/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6-rc4:    29/Jun/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6-rc5:    13/Jul/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6.0       18/Jul/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.0       05/Aug/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.1       31/Aug/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.2       14/Sep/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.3       28/Sep/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.4       13/Oct/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.5       28/Oct/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.6       10/Nov/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.6.1       23/Nov/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.7       25/Nov/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.8       07/Dec/2013 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.9       21/Dec/2013 by Simone Giustetti <studiosg@giustetti.net>
+#             Time to move to 14.1.
+# 1.7.10      05/Jan/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.11      18/Jan/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.12      08/Feb/2014 by Simone Giustetti <studiosg@giustetti.net>
+#             Removed the install line for the removed fnt2fon tool.
+#             Removed the install line for the removed sfnt2fnt tool.
+#             Added install line for the newly added sfnt2fon tool.
+# 1.7.13      22/Feb/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.14      08/Mar/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.15      23/Mar/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.16      06/Apr/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.17      19/Apr/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.18      03/May/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.19      18/May/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.20      14/Jun/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.21      29/Jun/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.22      12/Jul/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.23      28/Jul/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.24      10/Aug/2014 by Simone Giustetti <studiosg@giustetti.net>
+#             Updated the winecfg menu entry to comply with xfce specification
+# 1.7.25      23/Aug/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.26      06/Sep/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.27      22/Sep/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.28      04/Oct/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.29      22/Oct/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.30      03/Nov/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.31      18/Nov/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.32      30/Nov/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.33      14/Dec/2014 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.34      10/Jan/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.35      26/Jan/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.36      09/Feb/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.37      25/Feb/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.38      08/Mar/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.39      21/Mar/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.40      05/Apr/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.41      18/Apr/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.42      03/May/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.43      17/May/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.44      30/May/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.45      13/Jun/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.46      27/Jun/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.47      11/Jul/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.48      29/Jul/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.49      09/Aug/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.50      24/Aug/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.51      06/Sep/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.52      04/Oct/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.53      17/Oct/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.54      01/Nov/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.7.55      13/Nov/2015 by Simone Giustetti <studiosg@giustetti.net>
+#             Dependency list updated removing prelink and adding pulseaudio.
+#             Added a quick and dirty fix for an issue while building wow64.
+# 1.8-rc1     23/Nov/2015 by Simone Giustetti <studiosg@giustetti.net>
+#             The wow64 build issue should be resolved. Rewritten code to 
+#             perform a check.
+# 1.8-rc2     29/Nov/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8-rc3     06/Dec/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8-rc4     13/Dec/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8         20/Dec/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.0       31/Dec/2015 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.1       10/Jan/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.2       25/Jan/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.1       07/Feb/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.3       09/Feb/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.4       21/Feb/2016 by Simone Giustetti <studiosg@giustetti.net>
+#             This build is dedicated to the memory of Lidia Maurizio
+#             She will be missed.
+# 1.9.5       05/Mar/2016 by Simone Giustetti <studiosg@giustetti.net>
+#             The wow64 build issue is back, but for the server directory only.
+#             Code was updated to remove the directory before running make.
+# 1.9.6       20/Mar/2016 by Simone Giustetti <studiosg@giustetti.net>
+#             Bug 40253 marked resolved. We'll check how the code performs.
+# 1.9.7       02/Apr/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.2       16Apr/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.8       17/Apr/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.9       30/Apr/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.10      19/May/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.11      01/Jun/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.12      11/Jun/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.3       19/Jun/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.13      25/Jun/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.14      10/Jul/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.15      23/Jul/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.16      08/Aug/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.17      21/Aug/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.4       27/Aug/2016 by Simone Giustetti <studiosg@giustetti.net>
+#             1st Slackware 14.2 tentative version.
+# 1.9.18      04/Sep/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.19      17/Sep/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.20      02/Oct/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.5       08/Oct/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.21      16/Oct/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.22      29/Oct/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.23      11/Nov/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.9.24      26/Nov/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc1     10/Dec/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc2     18/Dec/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.6       24/Dec/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc3     26/Dec/2016 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc4     08/Jan/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc5     14/Jan/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0-rc6     21/Jan/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0         25/Jan/2017 by Simone Giustetti <studiosg@giustetti.net>
+#             Added --with-gnutls option to configure
+# 2.1         04/Feb/2017 by Simone Giustetti <studiosg@giustetti.net>
+#             Introduced new source archive format (xz)
+# 2.2         18/Feb/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.3         04/Mar/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 1.8.7       05/Mar/2017 by Simone Giustetti <studiosg@giustetti.net>
+#             Final release for the 1.8 branch.
+# 2.4         19/Mar/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.5         01/Apr/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.6         15/Apr/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0.1       23/Apr/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.7         29/Apr/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.8         13/May/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.9         27/May/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.10        11/Jun/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.11        24/Jun/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.12        08/Jul/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0.2       22/Jul/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.13        23/Jul/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.14        05/Aug/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.15        24/Aug/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.16        02/Sep/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.17        16/Sep/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.18        03/Oct/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.18        09/Oct/2017 by Simone Giustetti <studiosg@giustetti.net>
+#             Rebuilt the 32 bit package to solve ain issue with permission 
+#             of the /usr directory. Thanks to Matthew Reed for reporting
+#             the issue.
+# 2.19        14/Oct/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0.3       21/Oct/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.20        01/Nov/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.21        11/Nov/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.22        25/Nov/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc1     09/Dic/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc2     16/Dic/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc3     23/Dic/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc4     30/Dic/2017 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0.4       05/Jan/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc5     06/Jan/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0-rc6     13/Jan/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0         19/Jan/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.1         02/Feb/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.2         17/Feb/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.3         03/Mar/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.4         17/Mar/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 2.0.5       24/Mar/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.5         30/Mar/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.6         14/Apr/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.7         28/Apr/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.8         14/May/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.9         26/May/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.10        12/Jun/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.11        23/Jun/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0.2       30/Jun/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.12        10/Jul/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.13        21/Jul/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.14        20/Aug/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.15        01/Sep/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0.3       15/Sep/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.16        17/Sep/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.17        29/Sep/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.18        13/Oct/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.19        27/Oct/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.20        10/Nov/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.21        24/Nov/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0.4       01/Dec/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc1     08/Dec/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc2     15/Dec/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc3     22/Dec/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc4     29/Dec/2018 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc5     05/Jan/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc6     12/Jan/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0-rc7     19/Jan/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0         23/Jan/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.1         06/Feb/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.2         16/Feb/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.3         03/Mar/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 3.0.5       09/Mar/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.4         16/Mar/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.5         30/Mar/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.6         13/Apr/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.7         27/Apr/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.8         11/May/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0.1       18/May/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.9         25/May/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.10        11/Jun/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.11        22/Jun/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.12        06/Jul/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.12.1      08/Jul/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.13        03/Aug/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.14        17/Aug/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0.2       24/Aug/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.15        31/Aug/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.16        14/Sep/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.17        28/Sep/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.18        19/Oct/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.19        02/Nov/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.20        16/Nov/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 4.21        30/Nov/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0-rc1     14/Dec/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0-rc2     21/Dec/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0-rc3     28/Dec/2019 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0-rc4     04/Jan/2020 by Simone Giustetti <studiosg@giustetti.net>
+#             Added sha512 checksum
+# 5.0-rc5     10/Jan/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0         21/Jan/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.1         03/Feb/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.2         17/Feb/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.3         02/Mar/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.4         15/Mar/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.5         28/Mar/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.6         11/Apr/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.7         25/Apr/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 4.0.4       01/May/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.8         09/May/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.9         23/May/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0.1       06/Jun/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.10        06/Jun/2020 by Simone Giustetti <studiosg@giustetti.net>
+#             Changed -march=i486 into -march=i686 for i486 to avoid an error
+#                while linking ntdll.
+# 5.11        20/Jun/2020 by Simone Giustetti <studiosg@giustetti.net>
+#             Updated download URL for source code
+#             Reverted -march=i486 for i486 and set i686 as the default for
+#                32 bit builds
+# 5.12        04/Jul/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.13        18/Jul/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.14        01/Aug/2020 by Simone Giustetti <studiosg@giustetti.net>
+#             Introduced patch gstdemux.patch to solve an issue with 
+#                winegstreamer preventing a correct build
+# 5.0.2       15/Aug/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.15        16/Aug/2020 by Simone Giustetti <studiosg@giustetti.net>
+#             Removed gstdemux.patch patch. The related commit was reverted
+#                upstream.
+# 5.16        28/Aug/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.17        13/Sep/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.18        26/Sep/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.19        10/Oct/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.20        24/Oct/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.21        07/Nov/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0.3       14/Nov/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 5.22        21/Nov/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc1     05/Dec/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc2     12/Dec/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc3     19/Dec/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc4     29/Dec/2020 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc5     03/Jan/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0-rc6     09/Jan/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0         16/Jan/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.1         30/Jan/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.2         13/Feb/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.3         27/Feb/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.4         13/Mar/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.5         27/Mar/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0.4       27/Mar/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.6         10/Apr/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 5.0.5       17/Apr/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.7         24/Apr/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.8         08/May/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.9         21/May/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.10        05/Jun/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.11        19/Jun/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.12        10/Jul/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.13        21/Jul/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.14        31/Jul/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.15        15/Aug/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.16        28/Aug/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.17        11/Sep/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.18        25/Sep/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.19        09/Oct/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0.2       28/Oct/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.20        24/Oct/2021 by Simone Giustetti <studiosg@giustetti.net>
+#             Introduced patch __in.patch to solve an issue with glibc < 2.24
+#             Please see Wine bug 51926, 51940 and 51942
+# 6.21        06/Nov/2021 by Simone Giustetti <studiosg@giustetti.net>
+#             Removed patch. Fixed upstream. Please see
+#             https://source.winehq.org/git/wine.git/commitdiff/1c9b843ecf821d3caf43668c43bf0280c793b25d
+# 6.22        21/Nov/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 6.23        04/Dec/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc1     11/Dec/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc2     18/Dec/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc3     28/Dec/2021 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc4     03/Jan/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc5     08/Jan/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0-rc6     15/Jan/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0         20/Jan/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.1         29/Jan/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.2         12/Feb/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0.3       25/Feb/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.3         27/Feb/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.4         12/Mar/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.5         26/Mar/2022 by Simone Giustetti <studiosg@giustetti.net>
+#             First Slackware 15.0 release. Mingw was introduced along
+#                many other new libraries / dependencies
+# 7.6         10/Apr/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 6.0.4       18/Apr/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.7         23/Apr/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.8         07/May/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.9         21/May/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.10        04/Jun/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.11        18/Jun/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.12        02/Jul/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.13        16/Jul/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.14        30/Jul/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.15        16/Aug/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.16        30/Aug/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.17        10/Sep/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.18        24/Sep/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.19        15/Oct/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.20        02/Nov/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0.1       12/Nov/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.21        13/Nov/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 7.22        27/Nov/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0-rc1     10/Dec/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0-rc2     24/Dec/2022 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0-rc3     07/Jan/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0-rc4     15/Jan/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0-rc5     21/Jan/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0         25/Jan/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.1         03/Feb/2023 by Simone Giustetti <studiosg@giustetti.net>
+#             1st release to strip the PE libraries and executables to reduce total package size
+# 8.2         18/Feb/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.3         04/Mar/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.4         18/Mar/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 7.0.2       30/Mar/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.5         02/Apr/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.6         15/Apr/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0.1       22/Apr/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.7         29/Apr/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.8         13/May/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.9         27/May/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.10        10/Jun/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.11        24/Jun/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.12        08/Jul/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.0.2       23/Jul/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.13        25/Jul/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.14        19/Aug/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.15        02/Sep/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.16        16/Sep/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.17        30/Sep/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.18        14/Oct/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.19        30/Oct/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.20        11/Nov/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 8.21        25/Nov/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0-rc1     09/Dec/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0-rc2     16/Dec/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0-rc3     23/Dec/2023 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0-rc4     06/Jan/2024 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0-rc5     13/Jan/2024 by Simone Giustetti <studiosg@giustetti.net>
+# 9.0         17/Jan/2024 by Simone Giustetti <studiosg@giustetti.net>
+# 9.1         27/Jan/2024 by Simone Giustetti <studiosg@giustetti.net>
+# 9.2         10/Feb/2024 by Simone Giustetti <studiosg@giustetti.net>
+#
+# Run 'sh wine.SlackBuild' to build a Slackware package.
+# The package (.txz or .tgz) plus descriptive .txt file are created in /tmp .
+# Install using 'installpkg'.
+#
+# -----------------------------------------------------------------------------
+
+# Set initial variables:
+PRGNAM=wine
+SRCVER=${SRCVER:-"9.2"}
+VERSION=$(echo ${SRCVER} | tr '-' '.')
+BUILD=${BUILD:-1}
+TAG=${TAG:-sg}
+
+DOCS="ANNOUNCE AUTHORS COPYING.LIB LICENSE* README VERSION"
+DOC_SLACK="README.slackware"
+
+# Set the following variable to tgz if you wish to build a package for a
+# Slackware version < 13.0.
+PKG_FORMAT=${PKG_FORMAT:-"txz"}
+
+# The following variables can be set into the script or running it like
+# this: OPENGL=NO ./wine.SlackBuild
+# Use 'YES | NO' not 'yes | no': case-sensitive !
+
+# If your video card does not support hardware accelerated OpenGL,
+# then set the variable to "NO"
+OPENGL=${OPENGL:-"YES"}
+
+# If you set REQUIRE_FONTFORGE to "NO" then the script won't refuse to
+# build wine in case you don't have fontforge installed (it is needed
+# to generate the required base fonts).
+REQUIRE_FONTFORGE=${REQUIRE_FONTFORGE:-"YES"}
+
+# If you set REQUIREDBUILDER_USE to "YES" then the script will create a
+# dependency list (slack_required) from a scan of the compiled software.
+REQUIREDBUILDER_USE=${REQUIREDBUILDER_USE:-"YES"}
+
+# Where do we look for sources?
+SRCDIR=$(cd $(dirname $0); pwd)
+
+# Place to build (TMP) package (PKG) and output (OUTPUT) the program:
+TMP=${TMP:-/tmp/build}
+PKG=${TMP}/package-${PRGNAM}
+OUTPUT=${OUTPUT:-/tmp}
+
+SOURCE="${SRCDIR}/${PRGNAM}-${SRCVER}.tar.xz"
+SRCURL="https://dl.winehq.org/wine/source/8.x/${PRGNAM}-${SRCVER}.tar.xz"
+
+##
+## --- with a little luck, you won't have to edit below this point --- ##
+##
+
+# Determine target architecture
+if [ -z "${MARCH}" ]; then
+   MARCH=`uname -m`
+   case "${MARCH}" in
+      i?86)
+         export ARCH=i686
+      ;;
+      arm*)
+         export ARCH=arm
+      ;;
+      *)
+         export ARCH=${MARCH}
+      ;;
+   esac
+fi
+
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+echo -e "\E[0;32m|     ARCH=${ARCH}      |\E[0;0m"
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+
+case "${ARCH}" in
+   arm)
+      # Use Embedded Application Binary Interface. EABI was created as a common
+      # binary interface that should permit code compiled with a specific
+      # toolchain/compiler to be linked to projects compiled with another one.
+      # arm-slackware-linux-gnueabi and arm-slackware-linux are different
+      # targets.
+      BUILD_ARCH=${ARCH}"-slackware-linux-gnueabi"
+      ENABLE_64=""
+      SLKCFLAGS="-O2"
+   ;;
+   i486)
+      BUILD_ARCH=${ARCH}"-slackware-linux"
+      ENABLE_64=""
+      SLKCFLAGS="-O2 -march=i486 -mtune=i686"; SLKLDFLAGS="-L/usr/lib -ldl"; LIBDIRSUFFIX=""
+   ;;
+   i686)
+      BUILD_ARCH=${ARCH}"-slackware-linux"
+      ENABLE_64=""
+      SLKCFLAGS="-O2 -march=i686 -mtune=i686"; SLKLDFLAGS="-L/usr/lib -ldl"; LIBDIRSUFFIX=""
+   ;;
+   powerpc)
+      BUILD_ARCH=${ARCH}"-slackware-linux"
+      ENABLE_64=""
+      SLKCFLAGS="-O2"
+   ;;
+   s390)
+      BUILD_ARCH=${ARCH}"-slackware-linux"
+      ENABLE_64=""
+      SLKCFLAGS="-O2"
+   ;;
+   x86_64)
+      BUILD_ARCH=${ARCH}"-slackware-linux"
+      ENABLE_64=" --enable-win64"
+      SLKCFLAGS="-O2 -fPIC"; SLKLDFLAGS="-L/usr/lib64"; LIBDIRSUFFIX="64"
+   ;;
+esac
+
+# Exit the script on errors. Moved here for architecture detection to work.
+set -e
+trap 'echo "$0 FAILED on line $LINENO!" | tee ${OUTPUT}/${PRGNAM}_error.log' ERR
+# Catch unitialized variables:
+set -u
+P1=${1:-1}
+
+# Prepare a sane build environment:
+mkdir -p ${TMP}/tmp-${PRGNAM}  # Location to build the source
+rm -rf ${TMP}/tmp-${PRGNAM}/*  # Remove the remnants of previous build and continue
+mkdir -p ${PKG}                # Place for the package to be built
+rm -rf ${PKG}/*                # We always erase old package's contents
+mkdir -p ${OUTPUT}             # Place for the package to be saved
+
+# Source files availability:
+if ! [ -f ${SOURCE} ]; then
+   # Source archive not present. Try to download it.
+   if ! [ "x${SRCURL}" == "x" ]; then
+      # Check if the SRCDIR is writable at all - if not, download to ${OUTPUT}
+      [ -w "${SRCDIR}" ] || SOURCE="${OUTPUT}/$(basename $SOURCE)"
+      echo "Source '$(basename ${SOURCE})' not available yet..."
+      echo "Will download file to $(dirname $SOURCE)"
+      wget -nv -T 20 -O "${SOURCE}" "${SRCURL}" || true
+      if [ $? -ne 0 -o ! -s "${SOURCE}" ]; then
+         echo "Downloading '$(basename ${SOURCE})' failed... aborting the build."
+         mv -f "${SOURCE}" "${SOURCE}".FAIL
+         exit 1
+      fi
+   else
+      echo "File '$(basename ${SOURCE})' not available... aborting the build."
+      exit 1
+   fi
+fi
+
+if [ "$P1" == "--download" ]; then
+  echo "Download complete."
+  exit 0
+fi
+
+# --- PACKAGE BUILDING ---
+
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+echo -e "\E[0;32m| Start SlackBuild WINE |\E[0;0m"
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+
+if ! which fontforge >/dev/null 2>&1 ; then
+   echo "##"
+   echo "## The 'fontforge' program does not seem to be installed."
+   echo "## Wine uses fontforge to generate several TTF fonts (tahoma,tahomabd,marlett)"
+   echo "## that your Windows programs may want to use!"
+   if [ "YES" != "${REQUIRE_FONTFORGE}" ]; then 
+      echo "##"
+      echo "## Continuing the build anyway, but you were warned..."
+      echo "## Sleeping for 5 seconds, press <Ctrl>-C if you want to abort now."
+      echo "##"
+      sleep 5
+   else
+      echo "##"
+      echo "## Aborting the build - set the internal script variable:"
+      echo "##"
+      echo "##   'REQUIRE_FONTFORGE' to a value of 'NO'"
+      echo "##"
+      echo "## if you don't want to use fontforge to generate TTF fonts."
+      echo "##"
+      exit 1
+   fi
+fi
+
+cd ${TMP}/tmp-${PRGNAM}
+
+echo -e "\E[0;32m+-----------------------------------------------------+\E[0;0m"
+echo -e "\E[0;32m|  Extracting the source archive(s) for ${PRGNAM}...  |\E[0;0m"
+echo -e "\E[0;32m+-----------------------------------------------------+\E[0;0m"
+tar -xJvf ${SOURCE}
+[ "${SRCVER}" != "${VERSION}" ] && mv ${PRGNAM}-${SRCVER} ${PRGNAM}-${VERSION}
+cd ${PRGNAM}-${VERSION}
+
+# Change user permission
+chown -R root:root .
+find . \
+ \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
+ -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
+ -exec chmod 644 {} \;
+
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+echo -e "\E[0;32m|      Building ...     |\E[0;0m"
+echo -e "\E[0;32m+-----------------------+\E[0;0m"
+
+# Enable or disable opengl in accord to OPENGL variable value.
+if [ "$OPENGL" = "YES" ]; then
+   OPENGL_WITH="with"
+   else
+   OPENGL_WITH="without"
+fi
+
+# Create a directory where to build source.
+cd ${TMP}/tmp-${PRGNAM}
+mkdir ${PRGNAM}
+cd ${PRGNAM}
+
+LDFLAGS="${SLKLDFLAGS}" \
+CFLAGS="${SLKCFLAGS}" \
+CXXFLAGS="${SLKCFLAGS}" \
+../${PRGNAM}-${VERSION}/configure ${ENABLE_64} \
+   --prefix=/usr \
+   --localstatedir=/var \
+   --libdir=/usr/lib${LIBDIRSUFFIX} \
+   --sysconfdir=/etc \
+   --mandir=/usr/man \
+   --with-x \
+   --with-gnutls \
+   --${OPENGL_WITH}-opengl \
+   --program-prefix= \
+   --program-suffix= \
+   --build=${BUILD_ARCH} \
+   2>&1 | tee ${OUTPUT}/${PRGNAM}_configure.log
+make depend 2>&1 | tee ${OUTPUT}/${PRGNAM}_make.log
+make 2>&1 | tee -a ${OUTPUT}/${PRGNAM}_make.log
+make install DESTDIR=${PKG} 2>&1 |tee ${OUTPUT}/${PRGNAM}_install.log
+
+# Install the font converter programs in /usr/bin.
+install -m 755 tools/sfnt2fon/sfnt2fon ${PKG}/usr/bin
+
+# WoW (32 bit libraries) build instructions for 64 bit Wine.
+if [[ "x86_64" = ${ARCH}  ]]; then
+   # Create a clean directory for 32 bit wine.
+   mkdir -p ${TMP}/tmp-${PRGNAM}/wow64
+   cd ${TMP}/tmp-${PRGNAM}/wow64
+
+   # Set 32 bit config path as needed by gstreamer
+   PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+   LDFLAGS="${SLKLDFLAGS}" \
+   CFLAGS="${SLKCFLAGS}" \
+   CXXFLAGS="${SLKCFLAGS}" \
+   ../${PRGNAM}-${VERSION}/configure \
+      --with-wine64=../${PRGNAM} \
+      --prefix=/usr \
+      --localstatedir=/var \
+      --libdir=/usr/lib \
+      --sysconfdir=/etc \
+      --mandir=/usr/man \
+      --with-x \
+      --with-gnutls \
+      --${OPENGL_WITH}-opengl \
+      --program-prefix= \
+      --program-suffix= \
+      2>&1 | tee ${OUTPUT}/wow64_configure.log
+   make depend 2>&1 | tee ${OUTPUT}/wow64_make.log
+   make 2>&1 | tee -a ${OUTPUT}/wow64_make.log
+   make install DESTDIR=${PKG} 2>&1 |tee ${OUTPUT}/wow64_install.log
+fi
+
+# Strip binaries
+find ${PKG} | xargs file | grep -e "executable" -e "shared object" \
+   | grep ELF | cut -f 1 -d: | xargs strip --strip-unneeded 2> /dev/null
+# Strip the PE dlls and exes
+case "${ARCH}" in
+   i686)
+      find ${PKG}/usr/lib/wine/i386-windows -name "*.dll" \
+         | xargs i586-w64-mingw32-strip --strip-unneeded 2> /dev/null
+      find ${PKG}/usr/lib/wine/i386-windows -name "*.exe" \
+         | xargs i586-w64-mingw32-strip --strip-unneeded 2> /dev/null
+   ;;
+   x86_64)
+      # 64 bit binary files
+      find ${PKG}/usr/lib64/wine/x86_64-windows -name "*.dll" \
+         | xargs x86_64-w64-mingw32-strip --strip-unneeded 2> /dev/null
+      find ${PKG}/usr/lib64/wine/x86_64-windows -name "*.exe" \
+         | xargs x86_64-w64-mingw32-strip --strip-unneeded 2> /dev/null
+      # 32 bit binary files
+      find ${PKG}/usr/lib/wine/i386-windows -name "*.dll" \
+         | xargs i686-w64-mingw32-strip --strip-unneeded 2> /dev/null
+      find ${PKG}/usr/lib/wine/i386-windows -name "*.exe" \
+         | xargs i686-w64-mingw32-strip --strip-unneeded 2> /dev/null
+   ;;
+   *)
+      # Do not strip
+   ;;
+esac
+
+# Enter Wine sources directory.
+cd ${TMP}/tmp-${PRGNAM}/${PRGNAM}-${VERSION}
+# Add some documentation to the package:
+mkdir -p ${PKG}/usr/doc/${PRGNAM}"-"${VERSION}
+cp -a ${DOCS} ${PKG}/usr/doc/${PRGNAM}"-"${VERSION} || true
+cp -a ${SRCDIR}/$(basename $0) ${PKG}/usr/doc/${PRGNAM}"-"${VERSION}/${PRGNAM}.SlackBuild
+# Add the Slackware tips & tricks file.
+if [[ -f ${SRCDIR}/${DOC_SLACK} ]]; then
+   cp -a ${SRCDIR}/${DOC_SLACK} ${PKG}/usr/doc/${PRGNAM}"-"${VERSION}/${DOC_SLACK}
+fi
+chown -R root:root ${PKG}/usr/doc/${PRGNAM}"-"${VERSION}
+find ${PKG}/usr/doc -type f -exec chmod 644 {} \;
+
+# Compress the man page(s).
+if [ -d ${PKG}/usr/man ]; then
+  cd  ${PKG}/usr/man
+  find . -type f -name "*.?" -exec gzip -9f {} \;
+  for i in $(find . -type l -name "*.?") ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+fi
+
+# Add a package description.
+mkdir -p ${PKG}/install
+cat ${SRCDIR}/slack-desc > ${PKG}/install/slack-desc
+if [ -f ${SRCDIR}/doinst.sh ]; then
+  cat ${SRCDIR}/doinst.sh >> ${PKG}/install/doinst.sh
+fi
+
+# Add some icons to the package.
+if [[ -e ${SRCDIR}/winecfg_64.png ]]; then
+   mkdir -p ${PKG}/usr/share/pixmaps
+   cp -a ${SRCDIR}/winecfg_64.png ${PKG}/usr/share/pixmaps/winecfg.png
+fi
+if  [[ -e ${SRCDIR}/winecfg.svg ]]; then
+   mkdir -p ${PKG}/usr/share/icons/hicolor/scalable/apps
+   cp ${SRCDIR}/winecfg.svg ${PKG}/usr/share/icons/hicolor/scalable/apps/winecfg.svg
+fi
+
+# Add a desktop menu entry for the winecfg program.
+mkdir -p ${PKG}/usr/share/applications
+cat <<-_EOT_ > ${PKG}/usr/share/applications/winecfg.desktop
+[Desktop Entry]
+Categories=Application;Settings;
+Comment=Settings Tool for WINE.
+Encoding=UTF-8
+Exec=winecfg
+Icon=winecfg
+Name=Wine Configuration
+Terminal=false
+Type=Application
+_EOT_
+
+# Build a package dependency list.
+cd ${PKG}
+# If a dependency list is included in the sources archive, use it.
+if [[ -f ${SRCDIR}/slack-required ]]; then
+   cat ${SRCDIR}/slack-required > ${PKG}/install/slack-required
+fi
+
+# Build the package in txz or tgz format.
+cd ${PKG}
+makepkg --linkadd y --chown n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT} 2>&1 | tee ${OUTPUT}/${PRGNAM}_makepkg.log
+# Calculate hash files for the package.
+cd ${OUTPUT}
+md5sum ${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT} > ${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT}.md5
+shasum -a 512 ${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT} > ${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT}.SHA512
+# Create a description file for the package.
+cd -
+cat ${PKG}/install/slack-desc | grep "^${PRGNAM}" > ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.txt
+# Create a list of dependencies for the package.
+if [ -f ${PKG}/install/slack-required ]; then
+  cat ${PKG}/install/slack-required > ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.dep
+fi
+
+# Scan the package further dependencies.
+if [[ "NO" != ${REQUIREDBUILDER_USE} ]]; then
+   if ! which requiredbuilder >/dev/null 2>&1 ; then
+      echo "##"
+      echo "## The 'requiredbuilder' program does not seem to be installed."
+      echo "## It is not possible to create a dependency list. Will use one"
+      echo "## if included with the sources archive !"
+      exit 1
+   else
+      cd ${SRCDIR}
+      if [[ -f ${SRCDIR}/slack-required ]]; then
+         mv ${SRCDIR}/slack-required ${SRCDIR}/slack-required.old
+      fi
+      requiredbuilder -y -v -s ${SRCDIR} ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKG_FORMAT}
+   fi
+fi
